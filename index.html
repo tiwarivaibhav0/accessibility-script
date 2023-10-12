@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo Page</title>
+    <style>
+      /* Sample CSS Rules */
+      body {
+        /* font-family: "Amaranth", sans-serif; */
+        font-family: "Roboto", sans-serif;
+      }
+      .header {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        text-align: center;
+      }
+
+      #main-content {
+        width: 80%;
+        margin: 0 auto;
+      }
+
+      .info-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px;
+      }
+
+      .button {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amaranth&family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="header">
+      <h1>Welcome to Our Demo</h1>
+    </div>
+
+    <div id="main-content">
+      <h2>Main Content</h2>
+
+      <p>This is a paragraph with <a href="#" class="link">a link</a>.</p>
+
+      <div class="info-box">
+        <h3 class="box-title">Info Box 1</h3>
+        <p>This is some information in an info box.</p>
+      </div>
+
+      <div class="info-box">
+        <h3 class="box-title">Info Box 2</h3>
+        <p>Another info box with different content.</p>
+      </div>
+
+      <button class="button" id="demo-button">Click Me</button>
+    </div>
+
+    <script>
+      // JavaScript can be used to interact with the elements on the page
+      document
+        .getElementById("demo-button")
+        .addEventListener("click", function () {
+          alert("Button clicked!");
+        });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const accessibilityIcon = document.createElement("div");
+        accessibilityIcon.id = "accessibility-icon";
+        accessibilityIcon.innerHTML = "A";
+        accessibilityIcon.style =
+          "position:fixed;right:20px;top:50%;transform:translateY(-50%);background-color:#007bff;color:white;border-radius:50%;width:40px;height:40px;text-align:center;line-height:40px;cursor:pointer";
+
+        accessibilityIcon.addEventListener("click", function () {
+          const popup = document.createElement("div");
+          popup.style =
+            "position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);background-color:#ffffff;color:#333333;padding:20px;box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);z-index:1000;max-width:400px;border-radius:8px";
+
+          const options = [
+            "Content Scaling",
+            "Adjust Font Sizing",
+            "Adjust Line Height",
+            "Adjust Letter Spacing",
+            "Toggle Theme",
+            "Highlight Headings",
+            "Increase Line Spacing",
+            "Decrease Line Spacing",
+            "Toggle Grayscale",
+            "Invert Colors",
+          ];
+          options.forEach((option) => {
+            const optionDiv = document.createElement("div");
+            optionDiv.innerHTML = `<strong>${option}</strong>: <button data-option="${option}" class="adjust-button">+</button><button data-option="${option}" class="adjust-button">-</button>`;
+            optionDiv.style =
+              "margin-bottom:10px;display:flex;justify-content:space-between;align-items:center";
+            popup.appendChild(optionDiv);
+
+            const plusButton = optionDiv.querySelector(
+              `button[data-option="${option}"].adjust-button:nth-of-type(1)`
+            );
+            plusButton.style =
+              "padding:5px 10px;background-color:#007bff;color:white;border:none;border-radius:4px;cursor:pointer";
+            plusButton.addEventListener("click", function () {
+              if (option === "Toggle Theme") toggleTheme();
+              else if (option === "Highlight Headings") highlightHeadings();
+              else if (option === "Increase Line Spacing")
+                adjustLineSpacing("+");
+              else if (option === "Decrease Line Spacing")
+                adjustLineSpacing("-");
+              else if (option === "Toggle Grayscale") toggleGrayscale();
+              else if (option === "Invert Colors") invertColors();
+              else adjustAccessibility(option, "+");
+            });
+
+            const minusButton = optionDiv.querySelector(
+              `button[data-option="${option}"].adjust-button:nth-of-type(2)`
+            );
+            minusButton.style =
+              "padding:5px 10px;background-color:#ff6347;color:white;border:none;border-radius:4px;cursor:pointer";
+            minusButton.addEventListener("click", function () {
+              if (option === "Toggle Theme") toggleTheme();
+              else if (option === "Highlight Headings") unhighlightHeadings();
+              else if (option === "Increase Line Spacing")
+                adjustLineSpacing("-");
+              else if (option === "Decrease Line Spacing")
+                adjustLineSpacing("+");
+              else if (option === "Toggle Grayscale") toggleGrayscale();
+              else if (option === "Invert Colors") invertColors();
+              else adjustAccessibility(option, "-");
+            });
+          });
+
+          const closeButton = document.createElement("button");
+          closeButton.id = "close-button";
+          closeButton.innerText = "Close";
+          closeButton.style =
+            "padding:10px;background-color:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;display:block;margin-top:20px";
+          closeButton.addEventListener("click", function () {
+            popup.remove();
+          });
+
+          popup.appendChild(closeButton);
+          document.body.appendChild(popup);
+        });
+
+        document.body.appendChild(accessibilityIcon);
+
+        function adjustAccessibility(option, operation) {
+          const rootElement = document.documentElement;
+          switch (option) {
+            case "Content Scaling":
+              rootElement.style.fontSize = operation === "+" ? "120%" : "80%";
+              break;
+            case "Adjust Font Sizing":
+              rootElement.style.fontSize = `${
+                parseFloat(getComputedStyle(rootElement).fontSize) +
+                (operation === "+" ? 1 : -1)
+              }px`;
+              break;
+            case "Adjust Line Height":
+              rootElement.style.lineHeight = `${
+                parseFloat(getComputedStyle(rootElement).lineHeight) +
+                (operation === "+" ? 1 : -1)
+              }px`;
+              break;
+            case "Adjust Letter Spacing":
+              rootElement.style.letterSpacing = `${
+                parseFloat(getComputedStyle(rootElement).letterSpacing) +
+                (operation === "+" ? 1 : -1)
+              }px`;
+              break;
+          }
+        }
+
+        function toggleTheme() {
+          const body = document.body;
+          if (getComputedStyle(body).backgroundColor === "rgb(255, 255, 255)") {
+            body.style = "background-color:#333;color:#fff";
+          } else {
+            body.style = "background-color:#fff;color:#333";
+          }
+        }
+
+        function highlightHeadings() {
+          const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+          headings.forEach((heading) => {
+            heading.style.backgroundColor = "#ffff99";
+          });
+        }
+
+        function unhighlightHeadings() {
+          const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+          headings.forEach((heading) => {
+            heading.style.backgroundColor = "";
+          });
+        }
+
+        function adjustLineSpacing(operation) {
+          const rootElement = document.documentElement;
+          const currentLineHeight = parseFloat(
+            getComputedStyle(rootElement).lineHeight
+          );
+          rootElement.style.lineHeight = `${
+            currentLineHeight + (operation === "+" ? 1 : -1)
+          }px`;
+        }
+
+        function toggleGrayscale() {
+          const body = document.body;
+          if (getComputedStyle(body).filter === "grayscale(1)") {
+            body.style.filter = "grayscale(0)";
+          } else {
+            body.style.filter = "grayscale(1)";
+          }
+        }
+
+        function invertColors() {
+          const rootElement = document.documentElement;
+          if (getComputedStyle(rootElement).filter === "invert(1)") {
+            rootElement.style.filter = "invert(0)";
+          } else {
+            rootElement.style.filter = "invert(1)";
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
