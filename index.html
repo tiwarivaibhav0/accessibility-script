@@ -73,166 +73,139 @@
         });
     </script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const accessibilityIcon = document.createElement("div");
-        accessibilityIcon.id = "accessibility-icon";
-        accessibilityIcon.innerHTML = "A";
-        accessibilityIcon.style =
-          "position:fixed;right:20px;top:50%;transform:translateY(-50%);background-color:#007bff;color:white;border-radius:50%;width:40px;height:40px;text-align:center;line-height:40px;cursor:pointer";
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const createButton = (text, onClick) => {
+            const button = document.createElement('button');
+            button.innerText = text;
+            button.style = `
+                padding: 10px 12px;
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-left: 5px;
+            `;
+            button.addEventListener('click', onClick);
+            return button;
+        };
 
-        accessibilityIcon.addEventListener("click", function () {
-          const popup = document.createElement("div");
-          popup.style =
-            "position:fixed;top:50%;left:50%;transform:translate(-50%, -50%);background-color:#ffffff;color:#333333;padding:20px;box-shadow:0 4px 6px rgba(0, 0, 0, 0.1);z-index:1000;max-width:400px;border-radius:8px";
+        const createOption = (name, plusOnClick, minusOnClick) => {
+            const optionDiv = document.createElement('div');
+            optionDiv.innerHTML = `<strong>${name}</strong>: `;
+            optionDiv.appendChild(createButton('+', plusOnClick));
+            optionDiv.appendChild(createButton('-', minusOnClick));
+            optionDiv.style = `
+                margin-bottom: 10px;
+                align-items: center;
+                display: inline-block;
+                margin-right: 20px;
+                
+                
+            `;
+            return optionDiv;
+        };
 
-          const options = [
-            "Content Scaling",
-            "Adjust Font Sizing",
-            "Adjust Line Height",
-            "Adjust Letter Spacing",
-            "Toggle Theme",
-            "Highlight Headings",
-            "Increase Line Spacing",
-            "Decrease Line Spacing",
-            "Toggle Grayscale",
-            "Invert Colors",
-          ];
-          options.forEach((option) => {
-            const optionDiv = document.createElement("div");
-            optionDiv.innerHTML = `<strong>${option}</strong>: <button data-option="${option}" class="adjust-button">+</button><button data-option="${option}" class="adjust-button">-</button>`;
-            optionDiv.style =
-              "margin-bottom:10px;display:flex;justify-content:space-between;align-items:center";
-            popup.appendChild(optionDiv);
+        const createPopup = () => {
+            const popup = document.createElement('div');
+            popup.style = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #ffffff;
+                color: #333;
+                padding: 20px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                max-width: 90%;
+                width: 300px;
+                max-height: 80%;
+                overflow-y: auto;
+                border-radius: 8px;
+                font-family: Arial, sans-serif;
+            `;
 
-            const plusButton = optionDiv.querySelector(
-              `button[data-option="${option}"].adjust-button:nth-of-type(1)`
-            );
-            plusButton.style =
-              "padding:5px 10px;background-color:#007bff;color:white;border:none;border-radius:4px;cursor:pointer";
-            plusButton.addEventListener("click", function () {
-              if (option === "Toggle Theme") toggleTheme();
-              else if (option === "Highlight Headings") highlightHeadings();
-              else if (option === "Increase Line Spacing")
-                adjustLineSpacing("+");
-              else if (option === "Decrease Line Spacing")
-                adjustLineSpacing("-");
-              else if (option === "Toggle Grayscale") toggleGrayscale();
-              else if (option === "Invert Colors") invertColors();
-              else adjustAccessibility(option, "+");
+            // Media query for screens smaller than 600px
+            popup.style += `
+                @media (max-width: 600px) {
+                    width: 95%;
+                    max-width: none;
+                }
+            `;
+
+            return popup;
+        };
+
+        const createIcon = () => {
+            const icon = document.createElement('div');
+            icon.id = 'accessibility-icon';
+            icon.innerHTML = 'A';
+            icon.style = `
+                position: fixed;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                background-color: #007bff;
+                color: #fff;
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                text-align: center;
+                line-height: 40px;
+                cursor: pointer;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            `;
+
+            icon.addEventListener('click', togglePopup);
+
+            return icon;
+        };
+
+        const togglePopup = () => {
+            const popup = createPopup();
+
+            const features = [
+                ['Content Scaling', 'font-size', '120%', '80%'],
+                ['Font Sizing', 'font-size', '1.2em', '0.8em'],
+                ['Line Height', 'line-height', '1.2', '0.8'],
+                ['Letter Spacing', 'letter-spacing', '1px', '0px'],
+                ['Theme', 'background-color', '#333', '#fff'],
+                ['Highlight Headings', 'background-color', '#ffff99', 'transparent'],
+                ['Grayscale', 'filter', 'grayscale(1)', 'grayscale(0)'],
+                ['Invert Colors', 'filter', 'invert(1)', 'invert(0)'],
+                ['Feature 9', 'background-color', 'blue', 'transparent'],
+                ['Feature 10', 'color', 'red', 'transparent'],
+                ['Feature 11', 'border', '2px solid #ff6600', 'none'],
+                ['Feature 12', 'border', '2px dashed #00cc00', 'none'],
+                ['Feature 13', 'margin', '10px', '0'],
+                ['Feature 14', 'margin', '0', '10px'],
+                ['Feature 15', 'padding', '10px', '0'],
+                ['Feature 16', 'padding', '0', '10px'],
+                ['Feature 17', 'width', '200px', '100px'],
+                ['Feature 18', 'width', '100px', '200px'],
+                ['Feature 19', 'height', '200px', '100px'],
+                ['Feature 20', 'height', '100px', '200px']
+            ];
+
+            features.forEach(([name, property, increaseValue, decreaseValue]) => {
+                popup.appendChild(createOption(name, () => adjustStyle(property, increaseValue), () => adjustStyle(property, decreaseValue)));
             });
 
-            const minusButton = optionDiv.querySelector(
-              `button[data-option="${option}"].adjust-button:nth-of-type(2)`
-            );
-            minusButton.style =
-              "padding:5px 10px;background-color:#ff6347;color:white;border:none;border-radius:4px;cursor:pointer";
-            minusButton.addEventListener("click", function () {
-              if (option === "Toggle Theme") toggleTheme();
-              else if (option === "Highlight Headings") unhighlightHeadings();
-              else if (option === "Increase Line Spacing")
-                adjustLineSpacing("-");
-              else if (option === "Decrease Line Spacing")
-                adjustLineSpacing("+");
-              else if (option === "Toggle Grayscale") toggleGrayscale();
-              else if (option === "Invert Colors") invertColors();
-              else adjustAccessibility(option, "-");
-            });
-          });
+            popup.appendChild(createButton('Close', () => popup.remove()));
+            document.body.appendChild(popup);
+        };
 
-          const closeButton = document.createElement("button");
-          closeButton.id = "close-button";
-          closeButton.innerText = "Close";
-          closeButton.style =
-            "padding:10px;background-color:#007bff;color:white;border:none;border-radius:4px;cursor:pointer;display:block;margin-top:20px";
-          closeButton.addEventListener("click", function () {
-            popup.remove();
-          });
+        const adjustStyle = (property, value) => {
+            const rootElement = document.documentElement;
+            rootElement.style.setProperty(property, value);
+        };
 
-          popup.appendChild(closeButton);
-          document.body.appendChild(popup);
-        });
+        const body = document.body;
+        body.appendChild(createIcon());
+    });
+</script>
 
-        document.body.appendChild(accessibilityIcon);
-
-        function adjustAccessibility(option, operation) {
-          const rootElement = document.documentElement;
-          switch (option) {
-            case "Content Scaling":
-              rootElement.style.fontSize = operation === "+" ? "120%" : "80%";
-              break;
-            case "Adjust Font Sizing":
-              rootElement.style.fontSize = `${
-                parseFloat(getComputedStyle(rootElement).fontSize) +
-                (operation === "+" ? 1 : -1)
-              }px`;
-              break;
-            case "Adjust Line Height":
-              rootElement.style.lineHeight = `${
-                parseFloat(getComputedStyle(rootElement).lineHeight) +
-                (operation === "+" ? 1 : -1)
-              }px`;
-              break;
-            case "Adjust Letter Spacing":
-              rootElement.style.letterSpacing = `${
-                parseFloat(getComputedStyle(rootElement).letterSpacing) +
-                (operation === "+" ? 1 : -1)
-              }px`;
-              break;
-          }
-        }
-
-        function toggleTheme() {
-          const body = document.body;
-          if (getComputedStyle(body).backgroundColor === "rgb(255, 255, 255)") {
-            body.style = "background-color:#333;color:#fff";
-          } else {
-            body.style = "background-color:#fff;color:#333";
-          }
-        }
-
-        function highlightHeadings() {
-          const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
-          headings.forEach((heading) => {
-            heading.style.backgroundColor = "#ffff99";
-          });
-        }
-
-        function unhighlightHeadings() {
-          const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
-          headings.forEach((heading) => {
-            heading.style.backgroundColor = "";
-          });
-        }
-
-        function adjustLineSpacing(operation) {
-          const rootElement = document.documentElement;
-          const currentLineHeight = parseFloat(
-            getComputedStyle(rootElement).lineHeight
-          );
-          rootElement.style.lineHeight = `${
-            currentLineHeight + (operation === "+" ? 1 : -1)
-          }px`;
-        }
-
-        function toggleGrayscale() {
-          const body = document.body;
-          if (getComputedStyle(body).filter === "grayscale(1)") {
-            body.style.filter = "grayscale(0)";
-          } else {
-            body.style.filter = "grayscale(1)";
-          }
-        }
-
-        function invertColors() {
-          const rootElement = document.documentElement;
-          if (getComputedStyle(rootElement).filter === "invert(1)") {
-            rootElement.style.filter = "invert(0)";
-          } else {
-            rootElement.style.filter = "invert(1)";
-          }
-        }
-      });
-    </script>
   </body>
 </html>
